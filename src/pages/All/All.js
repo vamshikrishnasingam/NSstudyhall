@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./All.css"; // Import custom CSS
+import { Button, Offcanvas, Table, Container, Row, Col } from "react-bootstrap";
 
 function All() {
-
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
@@ -20,14 +21,20 @@ function All() {
     fetchData();
   }, []);
 
-
   const handleRowClick = (item) => {
-    navigate(`/details/${item._id}`, { state: { item} });
+    navigate(`/details/${item._id}`, { state: { item } });
   };
-   const renderFloorData = (floor, title) => (
-    <div style={{ marginBottom: '20px' }}>
-      <strong>{title}</strong>
-      <table border="1" style={{ width: '100%', marginTop: '10px', borderCollapse: 'collapse' }}>
+
+  const renderFloorData = (floor, title) => (
+    <div className="floor-container">
+      <h2 className="floor-title">{title}</h2>
+      <Table
+        striped
+        bordered
+        hover
+        responsive
+        variant="dark"
+      >
         <thead>
           <tr>
             <th>Name</th>
@@ -37,20 +44,26 @@ function All() {
         </thead>
         <tbody>
           {groupedData[floor] ? (
-            groupedData[floor].map(student => (
-              <tr key={student._id}>
-                <td onClick={() => handleRowClick(student)}>{student.name}</td>
+            groupedData[floor].map((student) => (
+              <tr
+                key={student._id}
+                className="student-row"
+                onClick={() => handleRowClick(student)}
+              >
+                <td>{student.name}</td>
                 <td>{student.mobileNumber}</td>
                 <td>{student.address}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="4">No data available</td>
+              <td colSpan="3" className="no-data">
+                No data available
+              </td>
             </tr>
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 
@@ -64,15 +77,17 @@ function All() {
       return acc;
     }, {});
   };
+
   const groupedData = groupByFloor(data);
 
   return (
-    <div>
-      <h1>All Students Data:</h1>
+    <div className="all-students-container">
+      <h1 className="main-title">All Students Data</h1>
+      {/* Uncomment if needed */}
       {/* {renderFloorData('1', 'First Floor AC')}
       {renderFloorData('2', 'Second Floor AC')}
       {renderFloorData('3', 'Third Floor Non-AC')} */}
-      {renderFloorData('', 'Previous Members')}
+      {renderFloorData("", "Previous Members")}
     </div>
   );
 }
